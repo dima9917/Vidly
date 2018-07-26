@@ -12,15 +12,18 @@ namespace Vidly.Controllers
     {
         // GET: Movies
 
-        IEnumerable<Customer> customers = new List<Customer>
-            {
-                new Customer {Name = "John Smith", Id = 1},
-                new Customer {Name = "Mary Williams", Id = 2}
-            };
-
-        public ActionResult Index(int? pageIndex, string sortBy)
+        private IEnumerable<Customer> GetCustomers()
         {
-            return View(customers);
+            return new List<Customer>
+            {
+                new Customer { Id = 1, Name = "John Smith" },
+                new Customer { Id = 2, Name = "Mary Williams" }
+            };
+        }
+
+        public ActionResult Index()
+        {
+            return View(GetCustomers());
         }
 
         [Route("movies/released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
@@ -29,14 +32,14 @@ namespace Vidly.Controllers
             return Content(year + "/" + month);
         }
 
-        public ActionResult Details(int Id)
+        public ActionResult Details(int id)
         {
-            if (customers.Count(x => x.Id == Id) > 0)
-            {
-                return View(customers.Single(x => x.Id == Id));
-            }
-            else
+            var customer = GetCustomers().SingleOrDefault(c => c.Id == id);
+
+            if (customer == null)
                 return HttpNotFound();
+
+            return View(customer);
         }
     }
 }
