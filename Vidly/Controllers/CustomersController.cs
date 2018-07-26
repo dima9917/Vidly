@@ -11,15 +11,26 @@ namespace Vidly.Controllers
 {
     public class CustomersController : Controller
     {
-        private ApplicationDbContext _context;
-        public CustomersController()
-        {
-            _context = new ApplicationDbContext();
-        }
+        #region context
+                private ApplicationDbContext _context;
+                public CustomersController()
+                {
+                    _context = new ApplicationDbContext();
+                }
 
-        protected override void Dispose(bool disposing)
+                protected override void Dispose(bool disposing)
+                {
+                    _context.Dispose();
+                }
+        #endregion
+        public ActionResult New()
         {
-            _context.Dispose();
+            var membershipTypes = _context.MembershipTypes.ToList();
+            var viewModel = new NewCustomerViewModel
+            {
+                MembershipTypes = membershipTypes
+            };
+            return View(viewModel);
         }
 
         public ActionResult Index()

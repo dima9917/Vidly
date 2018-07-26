@@ -1,3 +1,5 @@
 bin
 obj
 .vs
+/Vidly/App_Data/*.mdf
+/Vidly/App_Data/*.ldf
