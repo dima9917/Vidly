@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "CustomersView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Customers</h2>
+<ul>
+    @foreach (var customer in Model)
+    {
+        <li><a href="Customers/Details/@customer.Id">@customer.Name</a></li>
+    }
+</ul>
