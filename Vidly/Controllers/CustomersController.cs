@@ -26,11 +26,11 @@ namespace Vidly.Controllers
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
-            var viewModel = new NewCustomerViewModel
+            var viewModel = new CustomerFormViewModel
             {
                 MembershipTypes = membershipTypes
             };
-            return View(viewModel);
+            return View("CustomerForm", viewModel);
         }
 
         [HttpPost]
@@ -42,16 +42,24 @@ namespace Vidly.Controllers
             return RedirectToAction("Index", "Customers");
         }
 
+        public ActionResult Edit(int id)
+        {
+            var customer = _context.Customers.SingleOrDefault(x => x.Id == id);
+            if (customer == null)
+                return HttpNotFound();
+
+            var viewModel = new CustomerFormViewModel
+            {
+                Customer = customer,
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+            return View("CustomerForm", viewModel);
+        }
+
         public ActionResult Index()
         {
             var customers = _context.Customers.Include(c=>c.MembershipType);
             return View(customers);
-        }
-
-        [Route("movies/released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
-        public ActionResult ByReleaseDate(int year, int month)
-        {
-            return Content(year + "/" + month);
         }
 
         public ActionResult Details(int id)
@@ -63,5 +71,15 @@ namespace Vidly.Controllers
 
             return View(customer);
         }
+
+
+
+
+        [Route("movies/released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
+        public ActionResult ByReleaseDate(int year, int month)
+        {
+            return Content(year + "/" + month);
+        }
+
     }
 }
