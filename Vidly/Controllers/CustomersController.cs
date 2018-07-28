@@ -34,9 +34,23 @@ namespace Vidly.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Customer customer)
+        public ActionResult Save(Customer customer)
         {
-            _context.Customers.Add(customer);
+            if (customer.Id == 0)
+            {
+                _context.Customers.Add(customer);
+            }
+            else
+            {
+                var customerInDb = _context.Customers.Single(x => x.Id == customer.Id);
+                //TryUpdateModel(customerInDb); //Automatically update all fields in model
+                //TryUpdateModel(customerInDb, "", new string[] { "Name", "Email" }); //Automatically update specified fields in model
+                customerInDb.Name = customer.Name;
+                customerInDb.Birthdate = customer.Birthdate;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                customerInDb.IsSubscribedToNewsLetter = customer.IsSubscribedToNewsLetter;
+
+            }
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Customers");
