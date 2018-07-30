@@ -10,7 +10,55 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        private ApplicationDbContext _context = new ApplicationDbContext();
+        #region context
+        private ApplicationDbContext _context;
+        public MoviesController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+        #endregion
+        public ActionResult New()
+        {
+            var genres = _context.Movies.Select(x => x.Genre).Distinct().ToList();
+            //(from movie in _context.Movies
+            // select movie.Genre).Distinct();
+
+            var viewModel = new MovieFormViewModel
+            {
+                Genres = genres
+            };
+            return View("MovieForm", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Save(Movie movie)
+        {
+            if (movie.Id == 0)
+            {
+                movie.DateAdded = DateTime.Now;
+                _context.Movies.Add(movie);
+            }
+            else
+            {
+                var movieInDb = _context.Movies.Single(x => x.Id == movie.Id);
+                //TryUpdateModel(customerInDb); //Automatically update all fields in model
+                //TryUpdateModel(customerInDb, "", new string[] { "Name", "Email" }); //Automatically update specified fields in model
+                movieInDb.Name = movie.Name;
+                movieInDb.ReleaseDate = movie.ReleaseDate;
+                movieInDb.Genre = movie.Genre;
+                movieInDb.NumberInStock = movie.NumberInStock;
+
+            }
+            
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Movies");
+        }
 
         public ActionResult Random()
         {
