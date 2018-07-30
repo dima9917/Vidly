@@ -35,6 +35,19 @@ namespace Vidly.Controllers
             return View("MovieForm", viewModel);
         }
 
+        public ActionResult Edit(int Id)
+        {
+            var genres = _context.Movies.Select(x => x.Genre).Distinct().ToList();
+
+            var viewModel = new MovieFormViewModel
+            {
+                Genres = genres,
+                Movie = _context.Movies.Single(x => x.Id == Id)
+            };
+
+            return View("MovieForm", viewModel);
+        }
+
         [HttpPost]
         public ActionResult Save(Movie movie)
         {
@@ -76,10 +89,7 @@ namespace Vidly.Controllers
             //return RedirectToAction("Index", "Home", new { page = 1, sortby = "Name" });
         }
 
-        public ActionResult Edit(int movieId)
-        {
-            return Content("id=" + movieId);
-        }
+
         public ActionResult Index()
         {
             return View(_context.Movies);
