@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -24,7 +25,7 @@ namespace Vidly.Controllers
         #endregion
         public ActionResult New()
         {
-            var genres = _context.Movies.Select(x => x.Genre).Distinct().ToList();
+            var genres = _context.Genres.ToList();
             //(from movie in _context.Movies
             // select movie.Genre).Distinct();
 
@@ -35,16 +36,16 @@ namespace Vidly.Controllers
             return View("MovieForm", viewModel);
         }
 
-        public ActionResult Edit(int Id)
+        public ActionResult Edit(int id)
         {
-            var genres = _context.Movies.Select(x => x.Genre).Distinct().ToList();
-
+            var movie = _context.Movies.SingleOrDefault(c => c.Id == id);
+            if (movie == null)
+                return HttpNotFound();
             var viewModel = new MovieFormViewModel
             {
-                Genres = genres,
-                Movie = _context.Movies.Single(x => x.Id == Id)
+                Movie = movie,
+                Genres = _context.Genres.ToList()
             };
-
             return View("MovieForm", viewModel);
         }
 
@@ -58,14 +59,11 @@ namespace Vidly.Controllers
             }
             else
             {
-                var movieInDb = _context.Movies.Single(x => x.Id == movie.Id);
-                //TryUpdateModel(customerInDb); //Automatically update all fields in model
-                //TryUpdateModel(customerInDb, "", new string[] { "Name", "Email" }); //Automatically update specified fields in model
+                var movieInDb = _context.Movies.Single(m => m.Id == movie.Id);
                 movieInDb.Name = movie.Name;
-                movieInDb.ReleaseDate = movie.ReleaseDate;
-                movieInDb.Genre = movie.Genre;
+                movieInDb.GenreId = movie.GenreId;
                 movieInDb.NumberInStock = movie.NumberInStock;
-
+                movieInDb.ReleaseDate = movie.ReleaseDate;
             }
             
             _context.SaveChanges();
@@ -92,7 +90,8 @@ namespace Vidly.Controllers
 
         public ActionResult Index()
         {
-            return View(_context.Movies);
+            var movies = _context.Movies.Include(m => m.Genre).ToList();
+            return View(movies);
         }
 
         [Route("movies/released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
@@ -101,10 +100,12 @@ namespace Vidly.Controllers
             return Content(year + "/" + month);
         }
 
-        public ActionResult Details(int Id)
+        public ActionResult Details(int id)
         {
-            return View(_context.Movies.SingleOrDefault(x => x.Id == Id));
-            
+            var movie = _context.Movies.Include(c => c.Genre).SingleOrDefault(m => m.Id == id);
+            if (movie == null)
+                return HttpNotFound();
+            return View(movie);
         }
 
 
