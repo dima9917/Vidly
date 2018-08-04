@@ -252,6 +252,10 @@
     <Compile Include="Migrations\201807302147253_fix-NumberInStock.Designer.cs">
       <DependentUpon>201807302147253_fix-NumberInStock.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808040216416_Movie-required-fields.cs" />
+    <Compile Include="Migrations\201808040216416_Movie-required-fields.Designer.cs">
+      <DependentUpon>201808040216416_Movie-required-fields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -394,6 +398,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807302147253_fix-NumberInStock.resx">
       <DependentUpon>201807302147253_fix-NumberInStock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808040216416_Movie-required-fields.resx">
+      <DependentUpon>201808040216416_Movie-required-fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
