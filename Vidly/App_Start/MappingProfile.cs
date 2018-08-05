@@ -20,7 +20,9 @@ namespace Vidly.App_Start
 
             this.CreateMap<Customer, CustomerDto>();
             this.CreateMap<CustomerDto, Customer>().IgnoreAllPropertiesWithAnInaccessibleSetter(); //to ignore test prop
-
+            this.CreateMap<CustomerDto, Customer>().ForMember(m => m.Id, opt => opt.Ignore());
+            this.CreateMap<Movie, MovieDto>();
+            this.CreateMap<MovieDto, Movie>().ForMember(m => m.Id, opt => opt.Ignore());
         }
     }
 }
